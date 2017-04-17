@@ -28,6 +28,9 @@ extern unsigned long event;
 #include <linux/fs_struct.h>
 #include <linux/low-latency.h>
 
+/* added include for list.h */
+#include <linux/list.h>
+
 struct exec_domain;
 
 /*
@@ -318,6 +321,13 @@ extern struct user_struct root_user;
 
 typedef struct prio_array prio_array_t;
 
+
+struct t_zombie_list{
+	int pid;			/* possibly change to t_pid,currently not sure where included */
+	struct list_head list;
+	};
+
+
 struct task_struct {
 	/*
 	 * offsets of these are hardcoded elsewhere - touch with care
@@ -451,6 +461,13 @@ struct task_struct {
 
 /* journalling filesystem info */
 	void *journal_info;
+
+/* our max zombies,current zombies and zombie_list */
+	int max_zombies(-1);
+	int curr_zombies(-1);
+	struct t_zombie_list zombie_list;
+
+
 };
 
 /*
