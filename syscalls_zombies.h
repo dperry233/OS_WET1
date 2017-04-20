@@ -4,7 +4,7 @@
 
 
 int set_max_zombies(int  max_z, pid_t pid) {
-	unsigned int res(-1);
+	unsigned int res=-1;
 
 	if(max_z<0){
 		errno = EINVAL;
@@ -31,7 +31,7 @@ int set_max_zombies(int  max_z, pid_t pid) {
 }
 
 int get_max_zombies() {
-	unsigned int res(-1);
+	unsigned int res=-1;
 
 
 	__asm__(
@@ -49,11 +49,11 @@ int get_max_zombies() {
 }
 
 int get_zombies_count(pid_t pid) {
-	unsigned int res(-1);
+	unsigned int res=-1;
 
 	if(pid<0){
 		errno = ESRCH;
-		return -1
+		return -1;
 	}
 
 	__asm__(
@@ -72,7 +72,7 @@ int get_zombies_count(pid_t pid) {
 
 pid_t get_zombie_pid(int n) {
 	
-	pid_t res(-1)
+	pid_t res=-1;
 
 
 	__asm__(
@@ -85,7 +85,7 @@ pid_t get_zombie_pid(int n) {
 
 	if(res==-1){
 		errno = ESRCH;
-		return -1
+		return -1;
 	}
 
 	if ( res == -2) {
@@ -96,13 +96,13 @@ pid_t get_zombie_pid(int n) {
 }
 
 int set_max_zombies(int  n, pid_t adopter_pid) {
-	unsigned int res(-1);
+	unsigned int res=-1;
 
 
 
 	if(adopter_pid<0){
 		errno = ESRCH;
-		return -1
+		return -1;
 	}
 
 	__asm__(
