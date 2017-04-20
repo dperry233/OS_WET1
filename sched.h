@@ -465,7 +465,7 @@ struct task_struct {
 /* our max zombies,current zombies and zombie_list */
 	int max_zombies;
 	int curr_zombies;
-	struct t_zombie_list zombie_list;
+	struct t_zombie_list* zombie_list;
 
 
 };
@@ -574,8 +574,8 @@ extern struct exec_domain	default_exec_domain;
     alloc_lock:		SPIN_LOCK_UNLOCKED,				\
     journal_info:	NULL,						\
 	max_zombies: -1,							\
-	curr_zombies: -1						\
-	
+	curr_zombies: -1,						\
+	zombie_list: NULL,						\
 
 }
 
