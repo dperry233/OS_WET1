@@ -322,11 +322,11 @@ extern struct user_struct root_user;
 typedef struct prio_array prio_array_t;
 
 
-struct t_zombie_list{
-	int pid;			/* possibly change to t_pid,currently not sure where included */
+struct zombie_list_t{
+	pid_t pid;			/* possibly change to t_pid,currently not sure where included */
 	struct list_head list;
 	};
-
+typedef struct zombie_list_t* zombie_list;
 
 struct task_struct {
 	/*
@@ -462,10 +462,10 @@ struct task_struct {
 /* journalling filesystem info */
 	void *journal_info;
 
-/* our max zombies,current zombies and zombie_list */
+/* our max zombies,current zombies and zombies */
 	int max_zombies;
 	int curr_zombies;
-	struct t_zombie_list* zombie_list;
+	zombie_list zombies;
 
 
 };

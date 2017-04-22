@@ -15,7 +15,6 @@
  * 	- if pid<0 errno will get 'ESRCH'
  */
 int set_max_zombies(int  max_z, pid_t pid) {
-	int res = -1;
 	if(max_z < 0){
 		errno = EINVAL;
 		return -1;
@@ -24,6 +23,7 @@ int set_max_zombies(int  max_z, pid_t pid) {
 		errno = ESRCH;
 		return -1;
 	}
+	int res = -1;
 	__asm__(
 		"int $0x80;"
 		: "=a" (res)
@@ -31,7 +31,7 @@ int set_max_zombies(int  max_z, pid_t pid) {
 		:"memory"
 		);
 	if (res < 0) {
-		errno = (-res);	
+		errno = (-res);	// if no procces found errno=3 (ESRCH)
 		return -1;
 	}
 	return res;
@@ -72,11 +72,11 @@ int get_max_zombies() {
  * 	- if the pid<0.d errno will get 'ESRCH'.
  */
 int get_zombies_count(pid_t pid) {
-	int res = -1;
 	if(pid < 0){
 		errno = ESRCH;
 		return -1;
 	}
+	int res = -1;
 	__asm__(
 		"int $0x80;"
 		: "=a" (res)
@@ -84,7 +84,7 @@ int get_zombies_count(pid_t pid) {
 		:"memory"
 		);
 	if (res < 0) {
-		errno = (-res);	
+		errno = (-res);	// if no procces found errno=3 (ESRCH)
 		return -1;
 	}
 	return res;
@@ -103,6 +103,10 @@ int get_zombies_count(pid_t pid) {
  * 	- if no limit was set errno will get 'EINVAL'.
  */
 pid_t get_zombie_pid(int n) {
+	if (n < 0){
+		errno = EINVAL // my best guess
+		return -1;
+	}
 	pid_t res = -1;
 	__asm__(
 		"int $0x80;"
@@ -110,12 +114,8 @@ pid_t get_zombie_pid(int n) {
 		: "0" (246), "b"(n)
 		:"memory"
 		);
-	if (res == -1){
-		errno = ESRCH;
-		return -1;
-	}
-	if (res == -2) {
-		errno = EINVAL;	
+	if (res < 0){
+		errno = (-res);
 		return -1;
 	}
 	return res;
