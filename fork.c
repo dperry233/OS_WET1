@@ -606,6 +606,14 @@ int do_fork(unsigned long clone_flags, unsigned long stack_start,
 			goto fork_out;
 	}
 
+	/**
+	 * Check for zombies amount
+	 */
+	if (current->max_zombies!=-1 &&
+			current->curr_zombies > current->max_zombies){
+		goto fork_out;
+	}
+
 	retval = -ENOMEM;
 	p = alloc_task_struct();
 	if (!p)
@@ -715,6 +723,11 @@ int do_fork(unsigned long clone_flags, unsigned long stack_start,
 	p->swappable = 1;
 	p->exit_signal = clone_flags & CSIGNAL;
 	p->pdeath_signal = 0;
+
+	/* reset the zombies related values*/
+	p->max_zombies=-1;
+	p->curr_zombies=0;
+	p->zombies=null;
 
 	/*
 	 * Share the timeslice between parent and child, thus the
