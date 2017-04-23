@@ -394,6 +394,21 @@ void exit_mm(struct task_struct *tsk)
 static void exit_notify(void)
 {
 	struct task_struct * p, *t;
+/* an extra one on purpose to avoid messing with stuff we dont want to know about*/
+	struct task_struct * parent_proc;  
+	parent_proc = current->p_pptr;
+	if(parent_proc->max_zombies!=-1){
+		struct zombie_list new_zombie_node ;
+		zombie_list->pid= current->pid;
+		list_add_tail(&(parent_proc->zombies), &(new_zombie_node->list));
+
+		parent_proc->curr_zombies = curr_zombies+1;
+
+		/* still need to implement chaining to init incase parent not set for zombies */
+
+	}
+
+
 
 	forget_original_parent(current);
 	/*
@@ -621,6 +636,24 @@ repeat:
 				if (retval)
 					goto end_wait4; 
 				retval = p->pid;
+					/*  not actually sure this is the right place */
+					if(current->max_zombies!=-1){
+						
+						/* remove from zombie list here  */
+						list_for_each(pos, &current->zombies){
+						if(list_entry(pos, *(zombie_list), list))->pid==p->pid){
+							list_del(pos);
+						}
+						
+						}
+
+						parent_proc->curr_zombies = curr_zombies-1;
+
+
+
+					}
+
+
 				if (p->p_opptr != p->p_pptr) {
 					write_lock_irq(&tasklist_lock);
 					REMOVE_LINKS(p);
