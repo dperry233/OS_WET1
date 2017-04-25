@@ -404,8 +404,21 @@ static void exit_notify(void)
 
 		parent_proc->curr_zombies = curr_zombies+1;
 
-		/* still need to implement chaining to init incase parent not set for zombies */
+		
 
+	}
+	task_t* init_ptr = find_task_by_pid(1);
+	if(parent_proc->max_zombies!=-1&&init_ptr->max_zombies!=-1&&current->curr_zombies+init_ptr->curr_zombies<init_ptr->max_zombies){
+		
+		struct list_head *pos, *q;  /* q is used specifically for list_for_each_safe   */
+		list_for_each_safe(pos,q, &current->zombies.list){
+
+		i=i+1;
+		list_add_tail(&(pos), &(init_ptr->zombies.list));
+		list_del(pos);
+	}
+	init_ptr->curr_zombies=init_ptr->curr_zombies-current->curr_zombies;
+	current->curr_zombies=0;
 	}
 
 
