@@ -398,11 +398,10 @@ static void exit_notify(void)
 	struct task_struct * parent_proc;  
 	parent_proc = current->p_pptr;
 	if(parent_proc->max_zombies!=-1){
-		struct zombie_list new_zombie_node ;
-		zombie_list->pid= current->pid;
+		zombie_list new_zombie_node ;
+		new_zombie_node->pid= current->pid;
 		list_add_tail(&(parent_proc->zombies), &(new_zombie_node->list));
-
-		parent_proc->curr_zombies = curr_zombies+1;
+		parent_proc->curr_zombies ++;
 
 		
 
