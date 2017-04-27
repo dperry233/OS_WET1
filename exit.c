@@ -404,15 +404,16 @@ static void exit_notify(void)
 		parent_proc->curr_zombies ++;
 		task_t* init_ptr = find_task_by_pid(1);
 		if (init_ptr->max_zombies!=-1){
+			int i;
 			if (current->curr_zombies + init_ptr->curr_zombies <= init_ptr->max_zombies){
 				struct list_head *prev,*pos=&(current->zombies->list);
-				int i;
 				for(i=0;i<current->curr_zombies;i++){
 					prev=pos;
 					pos=pos->next;
-					list_move_tail(prev,&(init_ptr->zombies->list));
+					list_add_tail(prev,&(init_ptr->zombies->list));
+					list_del(prev);
 				}
-				init_ptr->curr_zombies+=curr_zombies-current->curr_zombies;
+				init_ptr->curr_zombies+=current->curr_zombies;
 			}
 			else{
 				struct list_head *prev,*pos=&(current->zombies->list);
