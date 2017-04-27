@@ -11,7 +11,7 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 	p->max_zombies = max_z;
 	p->curr_zombies = 0;
 	/*not sure about this line. the specific zombie_list should be initialized however*/
-	INIT_LIST_HEAD(p->zombies->list);
+	INIT_LIST_HEAD(&((p->zombies)->list));
 
 	return 0;
 }
@@ -19,7 +19,7 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 /**
  * sys_get_max_zombies:
  */
-int sys_get_max_zombies() {
+int sys_get_max_zombies(void) {
 	return current->max_zombies;
 }
 
@@ -44,12 +44,19 @@ pid_t sys_get_zombie_pid(int n) {
 	if(n >= current->curr_zombies){ //if there are n zombies the last one is the (n-1) (starting with 0).
 		return -3;		/*  the value of ESRCH is 3  */
 	}
-	struct list_head *pos=current->zombies->(&list);
-	for(int i=0;i<n;i++){
-		pos=pos->next;
+	struct list_head *pos;
+		int i=1;
+list_for_each(pos, &(current->zombies)->list){
+		if(i>n){
+			goto end_of_for1;
+		}
+		i=i+1;
+		
+		
 	}
+end_of_for1: 
 	/* not sure at all */
-	return (list_entry(pos, *(zombie_list), list))->pid;
+	return (list_entry(pos, struct zombie_list_t, list))->pid;
 }
 
 
@@ -72,12 +79,12 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 	}
 	int i=1;
 	struct list_head *pos, *q;  /* q is used specifically for list_for_each_safe   */
-	list_for_each_safe(pos,q, &current->zombies.list){
+	list_for_each_safe(pos,q, &(current->zombies)->list){
 		if(i>n){
 			goto end_of_for;
 		}
 		i=i+1;
-		list_add_tail(&(pos), &(adopter_ptr->zombies.list));
+		list_add_tail(&(pos), &(adopter_ptr->zombies->list));
 		list_del(pos);
 	}
 end_of_for: 
