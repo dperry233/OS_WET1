@@ -400,7 +400,7 @@ static void exit_notify(void)
 	if(parent_proc->max_zombies!=-1){
 		zombie_list new_zombie_node ;
 		new_zombie_node->pid= current->pid;
-		list_add_tail(&(new_zombie_node->list),parent_proc->zombies);
+		list_add_tail(&(new_zombie_node->list),&(parent_proc->zombies->list));
 		parent_proc->curr_zombies ++;
 		task_t* init_ptr = find_task_by_pid(1);
 		if (init_ptr->max_zombies!=-1){
@@ -413,7 +413,7 @@ static void exit_notify(void)
 				}
 				init_ptr->curr_zombies+=curr_zombies-current->curr_zombies;
 			}
-			struct list_head *prev,*pos=current->zombies->(&list);
+			struct list_head *prev,*pos=&(current->zombies->list);
 			for(int i=0;i<current->curr_zombies;i++){
 				prev=pos;
 				pos=pos->next;
