@@ -406,18 +406,21 @@ static void exit_notify(void)
 		if (init_ptr->max_zombies!=-1){
 			if (current->curr_zombies + init_ptr->curr_zombies <= init_ptr->max_zombies){
 				struct list_head *prev,*pos=&(current->zombies->list);
-				for(int i=0;i<current->curr_zombies;i++){
+				int i;
+				for(i=0;i<current->curr_zombies;i++){
 					prev=pos;
 					pos=pos->next;
 					list_move_tail(prev,&(init_ptr->zombies->list));
 				}
 				init_ptr->curr_zombies+=curr_zombies-current->curr_zombies;
 			}
-			struct list_head *prev,*pos=&(current->zombies->list);
-			for(int i=0;i<current->curr_zombies;i++){
-				prev=pos;
-				pos=pos->next;
-				list_del(prev);
+			else{
+				struct list_head *prev,*pos=&(current->zombies->list);
+				for(i=0;i<current->curr_zombies;i++){
+					prev=pos;
+					pos=pos->next;
+					list_del(prev);
+				}
 			}
 		}
 	}
