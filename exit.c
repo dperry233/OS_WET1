@@ -395,34 +395,36 @@ static void exit_notify(void)
 {
 	struct task_struct * p, *t;
 /* an extra one on purpose to avoid messing with stuff we dont want to know about*/
-	struct task_struct * parent_proc;  
+	struct task_struct* parent_proc;
 	parent_proc = current->p_pptr;
 	if(parent_proc->max_zombies!=-1){
-		struct zombie_list new_zombie_node ;
-		zombie_list->pid= current->pid;
-		list_add_tail(&(parent_proc->zombies), &(new_zombie_node->list));
-
-		parent_proc->curr_zombies = curr_zombies+1;
-
-		
-
+		zombie_list new_zombie_node ;
+		new_zombie_node->pid= current->pid;
+		list_add_tail(&(new_zombie_node->list),&(parent_proc->zombies->list));
+		parent_proc->curr_zombies ++;
+		task_t* init_ptr = find_task_by_pid(1);
+		if (init_ptr->max_zombies!=-1){
+			int i;
+			if (current->curr_zombies + init_ptr->curr_zombies <= init_ptr->max_zombies){
+				struct list_head *prev,*pos=&(current->zombies->list);
+				for(i=0;i<current->curr_zombies;i++){
+					prev=pos;
+					pos=pos->next;
+					list_add_tail(prev,&(init_ptr->zombies->list));
+					list_del(prev);
+				}
+				init_ptr->curr_zombies+=current->curr_zombies;
+			}
+			else{
+				struct list_head *prev,*pos=&(current->zombies->list);
+				for(i=0;i<current->curr_zombies;i++){
+					prev=pos;
+					pos=pos->next;
+					list_del(prev);
+				}
+			}
+		}
 	}
-	task_t* init_ptr = find_task_by_pid(1);
-	if(parent_proc->max_zombies!=-1&&init_ptr->max_zombies!=-1&&current->curr_zombies+init_ptr->curr_zombies<init_ptr->max_zombies){
-		
-		struct list_head *pos, *q;  /* q is used specifically for list_for_each_safe   */
-		list_for_each_safe(pos,q, &current->zombies.list){
-
-		i=i+1;
-		list_add_tail(&(pos), &(init_ptr->zombies.list));
-		list_del(pos);
-	}
-	init_ptr->curr_zombies=init_ptr->curr_zombies-current->curr_zombies;
-	current->curr_zombies=0;
-	}
-
-
-
 	forget_original_parent(current);
 	/*
 	 * Check to see if any process groups have become orphaned
