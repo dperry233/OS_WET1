@@ -573,10 +573,9 @@ extern struct exec_domain	default_exec_domain;
     blocked:		{{0}},						\
     alloc_lock:		SPIN_LOCK_UNLOCKED,				\
     journal_info:	NULL,						\
-	max_zombies: -1,							\
-	curr_zombies: 0,						\
-	zombies: NULL,						\
-
+    max_zombies:	-1,						\
+    curr_zombies:	0,						\
+    zombies:	NULL,						\
 }
 
 
