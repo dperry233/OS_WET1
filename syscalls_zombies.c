@@ -10,7 +10,7 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 	}
 	p->max_zombies = max_z;
 	p->curr_zombies = 0;
-	LIST_HEAD(p->max_zombies);
+	LIST_HEAD(p->zombies);
 	//INIT_LIST_HEAD(&(p->zombies->list));
 	return 0;
 }
@@ -87,7 +87,7 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 			break;
 		}
 		i++;
-		list_add_tail(&(pos), &(adopter_ptr->zombies->list));
+		list_add_tail(pos, &(adopter_ptr->zombies->list));
 		list_del(pos);
 	}
 	adopter_ptr->curr_zombies+=n;
