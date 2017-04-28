@@ -398,7 +398,7 @@ static void exit_notify(void)
 	struct task_struct* parent_proc;
 	parent_proc = current->p_pptr;
 	if(parent_proc->max_zombies!=-1){
-		zombie_list new_zombie_node ;
+		zombie_list new_zombie_node={NULL} ;
 		new_zombie_node->pid= current->pid;
 		list_add_tail(&(new_zombie_node->list),&(parent_proc->zombies->list));
 		parent_proc->curr_zombies ++;
@@ -653,16 +653,16 @@ repeat:
 				retval = p->pid;
 					/*  not actually sure this is the right place */
 					if(current->max_zombies!=-1){
-						
+						struct list_head* pos ;
 						/* remove from zombie list here  */
-						list_for_each(pos, &current->zombies){
-						if(list_entry(pos, *(zombie_list), list))->pid==p->pid){
+						list_for_each(pos, &(current->zombies)->list){
+						if(list_entry(pos, struct zombie_list_t, list)->pid==p->pid){
 							list_del(pos);
 						}
 						
 						}
 
-						parent_proc->curr_zombies = curr_zombies-1;
+						(current->p_pptr)->curr_zombies = (current->p_pptr)->curr_zombies-1;
 
 
 
