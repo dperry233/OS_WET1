@@ -402,9 +402,11 @@ static void exit_notify(void)
 		list_add_tail(&(newZombie->list),&(pt->zombies->list));
 		pt->curr_zombies ++;
 	}
-	struct list_head *pos, *q;
-	list_for_each_safe(pos,q, &(current->zombies)->list){
-		list_del(pos);
+	if(current->max_zombies!=-1){
+		struct list_head *pos, *q;
+		list_for_each_safe(pos,q, &(current->zombies)->list){
+			list_del(pos);
+		}
 	}
 	forget_original_parent(current);
 	/*
