@@ -394,36 +394,17 @@ void exit_mm(struct task_struct *tsk)
 static void exit_notify(void)
 {
 	struct task_struct * p, *t;
-/* an extra one on purpose to avoid messing with stuff we dont want to know about*/
-	struct task_struct* parent_proc;
-	parent_proc = current->p_pptr;
-	if(parent_proc->max_zombies!=-1){
-		zombie_list new_zombie_node={NULL} ;
-		new_zombie_node->pid= current->pid;
-		list_add_tail(&(new_zombie_node->list),&(parent_proc->zombies->list));
-		parent_proc->curr_zombies ++;
-		task_t* init_ptr = find_task_by_pid(1);
-		if (init_ptr->max_zombies!=-1){
-			int i;
-			if (current->curr_zombies + init_ptr->curr_zombies <= init_ptr->max_zombies){
-				struct list_head *prev,*pos=&(current->zombies->list);
-				for(i=0;i<current->curr_zombies;i++){
-					prev=pos;
-					pos=pos->next;
-					list_add_tail(prev,&(init_ptr->zombies->list));
-					list_del(prev);
-				}
-				init_ptr->curr_zombies+=current->curr_zombies;
-			}
-			else{
-				struct list_head *prev,*pos=&(current->zombies->list);
-				for(i=0;i<current->curr_zombies;i++){
-					prev=pos;
-					pos=pos->next;
-					list_del(prev);
-				}
-			}
-		}
+	struct task_struct* pt;
+	pt = current->p_pptr;
+	if(pt->max_zombies!=-1){
+		zombie_list newZombie={NULL} ;
+		newZombie->pid= current->pid;
+		list_add_tail(&(newZombie->list),&(pt->zombies->list));
+		pt->curr_zombies ++;
+	}
+	struct list_head *pos, *q;
+	list_for_each_safe(pos,q, &(current->zombies)->list){
+		list_del(pos);
 	}
 	forget_original_parent(current);
 	/*
@@ -437,7 +418,7 @@ static void exit_notify(void)
 	 */
 	 
 	t = current->p_pptr;
-	
+
 	if ((t->pgrp != current->pgrp) &&
 	    (t->session == current->session) &&
 	    will_become_orphaned_pgrp(current->pgrp, current) &&
@@ -653,21 +634,16 @@ repeat:
 				retval = p->pid;
 					/*  not actually sure this is the right place */
 					if(current->max_zombies!=-1){
-						struct list_head* pos ;
+						struct list_head *pos, *q;
 						/* remove from zombie list here  */
-						list_for_each(pos, &(current->zombies)->list){
-						if(list_entry(pos, struct zombie_list_t, list)->pid==p->pid){
-							list_del(pos);
+						list_for_each_safe(pos,q, &(current->zombies->list)){
+							if(list_entry(pos, struct zombie_list_t, list)->pid==p->pid){
+								list_del(pos);
+								break;
+							}
 						}
-						
-						}
-
-						(current->p_pptr)->curr_zombies = (current->p_pptr)->curr_zombies-1;
-
-
-
+						(current->p_pptr)->curr_zombies --;
 					}
-
 
 				if (p->p_opptr != p->p_pptr) {
 					write_lock_irq(&tasklist_lock);

@@ -77,11 +77,11 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 		return -22;		// the value of EINVAL
 	}
 	if((adopter_ptr->max_zombies)==-1){	
-		return -22;   	// the value of EINVA
+		return -22;   	// the value of EINVAL
 	}
 	struct list_head *pos, *q;
 	int i=0;
-	list_for_each_safe(pos,q, &(current->zombies)->list){
+	list_for_each_safe(pos,q, &(current->zombies->list)){
 		if(i==n){
 			break;
 		}
