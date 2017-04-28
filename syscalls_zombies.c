@@ -38,7 +38,7 @@ task_t* p = find_task_by_pid(pid);
  * sys_get_zombie_pid:
  */
 pid_t sys_get_zombie_pid(int n) {
-	if((current->max_zombies)==-1){	// if max_zombies=-1 that is?
+	if(!(current->max_zombies)){	// if max_zombies=-1 that is?
 		return -22;   	/*  the value of EINVAL is 22  */
 	}
 	if(n >= current->curr_zombies){ //if there are n zombies the last one is the (n-1) (starting with 0).

@@ -148,8 +148,8 @@ int give_up_zombie(int n, pid_t adopter_pid) {
 		: "0" (247), "b" (n), "c"(adopter_pid)
 		:"memory"
 		);
-	if ( res < 0) {
-		errno = res;	
+	if ( res == -1) {
+		errno = EINVAL;	
 		return -1;
 	}
 	return res;
