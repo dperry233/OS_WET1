@@ -727,7 +727,7 @@ int do_fork(unsigned long clone_flags, unsigned long stack_start,
 	/* reset the zombies related values*/
 	p->max_zombies=-1;
 	p->curr_zombies=0;
-	p->zombies=null;
+	p->zombies=NULL;
 
 	/*
 	 * Share the timeslice between parent and child, thus the
