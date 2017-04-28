@@ -104,7 +104,7 @@ int get_zombies_count(pid_t pid) {
  */
 pid_t get_zombie_pid(int n) {
 	if (n < 0){
-		errno = EINVAL // my best guess
+		errno = EINVAL ;/* my best guess */
 		return -1;
 	}
 	pid_t res = -1;
@@ -149,7 +149,7 @@ int give_up_zombie(int n, pid_t adopter_pid) {
 		:"memory"
 		);
 	if ( res == -1) {
-		errno = EINVAL);	
+		errno = EINVAL;	
 		return -1;
 	}
 	return res;
