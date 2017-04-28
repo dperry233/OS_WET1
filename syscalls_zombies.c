@@ -10,7 +10,8 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 	}
 	p->max_zombies = max_z;
 	p->curr_zombies = 0;
-	INIT_LIST_HEAD(&((p->zombies)->list));
+	LIST_HEAD(p->max_zombies);
+	//INIT_LIST_HEAD(&(p->zombies->list));
 	return 0;
 }
 
