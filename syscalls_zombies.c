@@ -1,5 +1,4 @@
 #include <linux/sched.h>
-#include <linux/slab.h>
 
 /**
  * sys_set_max_zombies:
