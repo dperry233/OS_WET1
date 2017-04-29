@@ -639,7 +639,6 @@ repeat:
 						/* remove from zombie list here  */
 						list_for_each_safe(pos,q, &(current->zombies_list)){
 							if(list_entry(pos,struct task_struct, zombies_list)->pid==p->pid){
-								list_entry(pos,struct task_struct, zombies_list)->zombie_node=NULL;//optional at best
 								list_del(pos);
 								break;
 							}

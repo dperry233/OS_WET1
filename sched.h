@@ -570,8 +570,6 @@ extern struct exec_domain	default_exec_domain;
     journal_info:	NULL,						\
     max_zombies:	-1,						\
     curr_zombies:	0,						\
-	zombies_list:	NULL						\
-	zombie_node:	NULL						\
 }
 
 
