@@ -322,12 +322,6 @@ extern struct user_struct root_user;
 typedef struct prio_array prio_array_t;
 
 
-struct zombie_list_t{
-	pid_t pid;			/* possibly change to t_pid,currently not sure where included */
-	struct list_head list;
-	};
-typedef struct zombie_list_t* zombie_list;
-
 struct task_struct {
 	/*
 	 * offsets of these are hardcoded elsewhere - touch with care
@@ -465,7 +459,8 @@ struct task_struct {
 /* our max zombies,current zombies and zombies */
 	int max_zombies;
 	int curr_zombies;
-	zombie_list zombies;
+	struct list_head zombies_list;
+	struct list_head zombie_node;
 
 
 };
@@ -575,7 +570,8 @@ extern struct exec_domain	default_exec_domain;
     journal_info:	NULL,						\
     max_zombies:	-1,						\
     curr_zombies:	0,						\
-    zombies:	NULL,						\
+	zombies_list:	NULL						\
+	zombie_node:	NULL						\
 }
 
 
