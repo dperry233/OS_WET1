@@ -56,7 +56,7 @@ pid_t sys_get_zombie_pid(int n) {
 		}
 		i++;
 	}
-	return (list_entry(pos, struct task_struct, zombies_list))->pid;
+	return (list_entry(pos, struct task_struct, zombie_node))->pid;
 }
 
 /**
