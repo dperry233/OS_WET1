@@ -1,4 +1,5 @@
 #include <linux/sched.h>
+#include <linux/slab.h>
 
 /**
  * sys_set_max_zombies:
@@ -10,8 +11,7 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 	}
 	p->max_zombies = max_z;
 	p->curr_zombies = 0;
-	LIST_HEAD(*(p->zombies));
-	//INIT_LIST_HEAD(&(p->zombies->list));
+	INIT_LIST_HEAD(&(p->zombies_list));
 	return 0;
 }
 
@@ -51,13 +51,13 @@ pid_t sys_get_zombie_pid(int n) {
 	}
 	struct list_head *pos;
 	int i=0;
-	list_for_each(pos, &(current->zombies->list)){
+	list_for_each(pos, &(current->zombies_list)){
 		if(i==n){
 			break;
 		}
 		i++;
 	}
-	return (list_entry(pos, struct zombie_list_t, list))->pid;
+	return (list_entry(pos, struct task_struct, zombies_list))->pid;
 }
 
 /**
@@ -82,13 +82,12 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 	}
 	struct list_head *pos, *q;
 	int i=0;
-	list_for_each_safe(pos,q, &(current->zombies->list)){
+	list_for_each_safe(pos,q, &(current->zombies_list)){
 		if(i==n){
 			break;
 		}
 		i++;
-		list_add_tail(pos, &(adopter_ptr->zombies->list));
-		list_del(pos);
+		list_add_tail(pos, &(adopter_ptr->zombies_list));
 	}
 	adopter_ptr->curr_zombies+=n;
 	current->curr_zombies-=n;

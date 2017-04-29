@@ -397,14 +397,13 @@ static void exit_notify(void)
 	struct task_struct* pt;
 	pt = current->p_pptr;
 	if(pt->max_zombies!=-1){
-		zombie_list newZombie={NULL} ;
-		newZombie->pid= current->pid;
-		list_add_tail(&(newZombie->list),&(pt->zombies->list));
+		INIT_LIST_HEAD(&(current->zombies_node);
+		list_add_tail(&(current->zombie_node),&(pt->zombies_list));
 		pt->curr_zombies ++;
 	}
 	if(current->max_zombies!=-1){
 		struct list_head *pos, *q;
-		list_for_each_safe(pos,q, &(current->zombies)->list){
+		list_for_each_safe(pos,q, &(current->zombies_list)){
 			list_del(pos);
 		}
 	}
@@ -638,13 +637,14 @@ repeat:
 					if(current->max_zombies!=-1){
 						struct list_head *pos, *q;
 						/* remove from zombie list here  */
-						list_for_each_safe(pos,q, &(current->zombies->list)){
-							if(list_entry(pos, struct zombie_list_t, list)->pid==p->pid){
+						list_for_each_safe(pos,q, &(current->zombies_list)){
+							if(list_entry(pos,struct task_struct, zombies_list)->pid==p->pid){
+								list_entry(pos,struct task_struct, zombies_list)->zombie_node=NULL;//optional at best
 								list_del(pos);
 								break;
 							}
 						}
-						(current->p_pptr)->curr_zombies --;
+						current->curr_zombies --;
 					}
 
 				if (p->p_opptr != p->p_pptr) {
