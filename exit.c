@@ -401,12 +401,12 @@ static void exit_notify(void)
 		list_add_tail(&(current->zombie_node),&(pt->zombies_list));
 		pt->curr_zombies ++;
 	}
-	if(current->max_zombies!=-1){
+	/*if(current->max_zombies!=-1){
 		struct list_head *pos, *q;
 		list_for_each_safe(pos,q, &(current->zombies_list)){
 			list_del(pos);
 		}
-	}
+	}*/
 	forget_original_parent(current);
 	/*
 	 * Check to see if any process groups have become orphaned
@@ -638,7 +638,7 @@ repeat:
 						struct list_head *pos, *q;
 						/* remove from zombie list here  */
 						list_for_each_safe(pos,q, &(current->zombies_list)){
-							if(list_entry(pos,struct task_struct, zombies_list)->pid==p->pid){
+							if((list_entry(pos,struct task_struct, zombies_list))->pid == p->pid){
 								list_del(pos);
 								break;
 							}
