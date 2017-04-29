@@ -93,6 +93,11 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 			break;
 		}
 		i++;
+		struct task_struct* s=list_entry(pos, struct task_struct, zombie_node);
+		REMOVE_LINKS(s);
+		s->p_pptr = adopter_ptr;
+		SET_LINKS(s);
+
 		list_del(pos);
 		list_add_tail(pos, &(adopter_ptr->zombies_list));
 	}
