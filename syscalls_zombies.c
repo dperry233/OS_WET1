@@ -86,6 +86,7 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 			break;
 		}
 		i++;
+		del(pos);
 		list_add_tail(pos, &(adopter_ptr->zombies_list));
 	}
 	adopter_ptr->curr_zombies+=n;
