@@ -19,7 +19,7 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
  */
 int sys_get_max_zombies(void) {
 	if(current->max_zombies==-1){
-		return -3; // the value of ESRCH
+		return -22; // the value of ESRCH
 	}
 	return current->max_zombies;
 }
