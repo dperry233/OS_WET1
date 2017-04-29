@@ -397,7 +397,7 @@ static void exit_notify(void)
 	struct task_struct* pt;
 	pt = current->p_pptr;
 	if(pt->max_zombies!=-1){
-		INIT_LIST_HEAD(&(current->zombies_node));
+		INIT_LIST_HEAD(&(current->zombie_node));
 		list_add_tail(&(current->zombie_node),&(pt->zombies_list));
 		pt->curr_zombies ++;
 	}
