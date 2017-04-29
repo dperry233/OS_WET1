@@ -73,8 +73,15 @@ int sys_give_up_zombie(int n, pid_t adopter_pid) {
 	if(!adopter_ptr){
 		return -3; 		// the value of ESRCH
 	}
-	if( n + adopter_ptr->curr_zombies > adopter_ptr->max_zombies){
-		return -22;		// the value of EINVAL
+	if( current->pid == adopter_pid){
+		if(adopter_ptr->curr_zombies > adopter_ptr->max_zombies){
+			return -22;		// the value of EINVAL
+		}
+	}
+	else{
+		if( n + adopter_ptr->curr_zombies > adopter_ptr->max_zombies){
+			return -22;		// the value of EINVAL
+		}
 	}
 	if((adopter_ptr->max_zombies)==-1){	
 		return -22;   	// the value of EINVAL
