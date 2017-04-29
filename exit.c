@@ -640,10 +640,11 @@ repeat:
 						list_for_each_safe(pos,q, &(current->zombies_list)){
 							if((list_entry(pos,struct task_struct, zombies_list))->pid == p->pid){
 								list_del(pos);
+								current->curr_zombies --;
 								break;
 							}
 						}
-						current->curr_zombies --;
+
 					}
 
 				if (p->p_opptr != p->p_pptr) {
