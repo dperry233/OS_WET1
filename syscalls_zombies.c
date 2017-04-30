@@ -8,9 +8,11 @@ int sys_set_max_zombies(int max_z, pid_t pid) {
 	if(!p){
 		return -3; // the value of ESRCH
 	}
+	if(p->max_zombies == -1){
+		INIT_LIST_HEAD(&(p->zombies_list));
+		p->curr_zombies = 0;
+	}
 	p->max_zombies = max_z;
-	p->curr_zombies = 0;
-	INIT_LIST_HEAD(&(p->zombies_list));
 	return 0;
 }
 
